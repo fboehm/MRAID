@@ -11,4 +11,28 @@ output: bookdown::html_document2
 We want to change the MRAID model so that it accommodates one-sample MR. MRAID was designed for two-sample MR, but, by allowing for correlation between the two error terms, we can adapt it to one-sample MR.
 
 
+## Model Specification
+
+$$x = Z\beta + \epsilon$$
+
+$$y = Z\beta\alpha + Z(\beta \circ v)\rho + Z\eta_u + \epsilon_y$$
+
+We also specify the distributions for the entries in the length $p$ vectors.
+
+$$\beta[j] \sim \pi_{\beta}N(0, \sigma^2_{\beta}) + (1 - \pi_{\beta})\delta_0$$
+
+$$\eta_u[j] \sim \pi_1 N(0, \sigma^2_{\eta}) + (1 - \pi_1) \delta_0$$
+
+$$\eta_u[j] \sim \pi_0N(0, \sigma^2_{\eta}) + (1 - \pi_0)\delta_0$$
+
+$$p(v[j] = 1) = \pi_c$$ if $\beta[j] \neq 0$
+
+
+Other specifications are described in the supplementary text for Zhongshang's paper.
+
+
+
+## Detailed sampling steps
+
+
 
