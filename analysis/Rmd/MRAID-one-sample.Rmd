@@ -1,0 +1,14 @@
+---
+title: "MRAID for one sample MR"
+author: "Frederick J. Boehm"
+date: "`r Sys.Date()`"
+output: bookdown::html_document2
+---
+
+
+## Overview
+
+We want to change the MRAID model so that it accommodates one-sample MR. MRAID was designed for two-sample MR, but, by allowing for correlation between the two error terms, we can adapt it to one-sample MR.
+
+
+
