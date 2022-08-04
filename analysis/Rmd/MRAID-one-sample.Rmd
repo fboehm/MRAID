@@ -34,5 +34,11 @@ Other specifications are described in the supplementary text for Zhongshang's pa
 
 ## Detailed sampling steps
 
+$$f(\alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma |x,y) \propto f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma)f(\beta|\gamma)f(\eta_u|\tau)f(v|\gamma)f(\tau|\gamma) f(\gamma|\pi_{\beta}) f(\pi_{\beta}) f(\pi_1) f(\pi_0) f(\pi_C)f(\Gamma)$$
+and $$f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma) = $$
+
+
+
+
 
 
