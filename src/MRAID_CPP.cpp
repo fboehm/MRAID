@@ -123,7 +123,7 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
     double U_beta_1,U_gamma_1;
     vec latent_gamma = zeros<vec>(p);
     vec latent_gamma_pleiotropy = zeros<vec>(p);
-    vec I = zeros<vec>(p);
+    vec I = zeros<vec>(p); // vector I is denoted by v in Yuan et al 2022
     double part_1,part_2,Probability_gamma,randu_number;
     double part_1_pleiotropy,part_2_pleiotropy,Probability_gamma_pleiotropy,randu_number_pleiotropy;
     double part_1_I,part_2_I,Probability_I_indicator,randu_number_I;
