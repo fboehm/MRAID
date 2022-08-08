@@ -6,12 +6,12 @@ output: bookdown::html_document2
 ---
 
 
-## Overview
+# Overview
 
 We want to change the MRAID model so that it accommodates one-sample MR. MRAID was designed for two-sample MR, but, by allowing for correlation between the two error terms, we can adapt it to one-sample MR.
 
 
-## Model Specification
+# Model Specification
 
 $$x = Z\beta + \epsilon$$
 
@@ -32,10 +32,14 @@ Other specifications are described in the supplementary text for Zhongshang's pa
 
 
 
-## Detailed sampling steps
+# Detailed sampling steps
 
 $$f(\alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma |x,y) \propto f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma)f(\beta|\gamma)f(\eta_u|\tau)f(v|\gamma)f(\tau|\gamma) f(\gamma|\pi_{\beta}) f(\pi_{\beta}) f(\pi_1) f(\pi_0) f(\pi_C)f(\Gamma)$$
 and $$f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma) = $$
+
+# Examining the update for $\beta[j]$
+
+Working from the supplemental materials for Yuan et al. 2022, we need to consider the distribution $f(vec(X)|\alpha, \beta, \gamma, \eta_u, \tau, v, \rho)$, where $X$ is a n by 2 matrix of the two traits, y and x, and the parameters are as defined by Yuan et al. 
 
 
 
