@@ -32,7 +32,7 @@ Other specifications are described in the supplementary text for Zhongshang's pa
 
 
 
-# Detailed sampling steps
+# Detailed sampling steps - when not using summary statistics
 
 $$f(\alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma |x,y) \propto f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma)f(\beta|\gamma)f(\eta_u|\tau)f(v|\gamma)f(\tau|\gamma) f(\gamma|\pi_{\beta}) f(\pi_{\beta}) f(\pi_1) f(\pi_0) f(\pi_C)f(\Gamma)$$
 and $$f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma) = $$
@@ -40,6 +40,14 @@ and $$f(x, y | \alpha, \beta, \gamma, \eta_u, \tau, v, \rho, \Gamma) = $$
 # Examining the update for $\beta[j]$
 
 Working from the supplemental materials for Yuan et al. 2022, we need to consider the distribution $f(vec(X)|\alpha, \beta, \gamma, \eta_u, \tau, v, \rho)$, where $X$ is a n by 2 matrix of the two traits, y and x, and the parameters are as defined by Yuan et al. 
+
+# MRAID with summary statistics
+
+The R and C++ code require inputs as summary statistics, so a user must acquire 
+summary statistics in the form of SNP correlation matrix and SNP effect size estimates.
+
+One approach would involve using GEMMA to get summary statistics, if, for example, 
+one is working with individual-level UKB data.
 
 
 
