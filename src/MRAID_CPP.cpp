@@ -145,9 +145,9 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
     mat x2left = Sigma2 - (n2-1)*Identity;
     mat x1left = Sigma1 - (n1-1)*Identity;	
     
-    for(int m=0; m<Gibbs_number; ++m){ // iterate for Gibbs sampling. m indexes the iteration number
+    for(int m=0; m<Gibbs_number; ++m){ // iterate for Gibbs sampling. m is the iteration number
       double sample_var_pleiotropy_gamma_1 = 1.0/((n2-1)/sigma2z + 1/sigma2gamma_1);
-      for(int k=0; k<p; ++k){ // iterate over the p SNPs?
+      for(int k=0; k<p; ++k){ // iterate over the p SNPs
         //calculate var for beta_j
         double sample_var_1 = 1.0/((n1-1)/sigma2y + 
                                    (n2-1)*((alpha+rho*I(k))*(alpha+rho*I(k))/sigma2z) + 
@@ -182,7 +182,7 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
           latent_gamma(k) = 0;
           latent_beta(k) = 0;
         }
-
+        // mean for conditional distribution of kth entry in gamma vector
         U_gamma_1 =((((n2-1)*betayh(k) -
           rho*sum(Sigma2.col(k)% latent_beta % I)- 
           alpha*sum(Sigma2.col(k)% latent_beta)- 
@@ -217,11 +217,8 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
           latent_gamma(k)*log(pi_2));
         
         part_2_I = exp(latent_gamma(k)*log(1-pi_2));
-        
         Probability_I_indicator = part_1_I/(part_1_I+part_2_I);
-        
         randu_number_I = as_scalar(randu(1));
-        
         if(randu_number_I<= Probability_I_indicator){
           I(k) = 1;
         } else {
@@ -232,7 +229,9 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
     double indicator = (as_scalar((I % latent_beta).t()* Sigma2 * (I % latent_beta))/sigma2z);
     if(indicator > maxvar){
       double sample_rho_variance = 1.0/(as_scalar((I % latent_beta).t()* Sigma2 * (I % latent_beta))/sigma2z);
-      double sample_rho_mean = (as_scalar((I % latent_beta).t()* betayh*(n2-1)-(I % latent_beta).t()*Sigma2*pleiotropy_gamma - (I % latent_beta).t()*Sigma2*latent_beta*alpha)/sigma2z)*sample_rho_variance;
+      double sample_rho_mean = (as_scalar((I % latent_beta).t()* betayh*(n2-1)-
+                                (I % latent_beta).t()*Sigma2*pleiotropy_gamma - 
+                                (I % latent_beta).t()*Sigma2*latent_beta*alpha)/sigma2z)*sample_rho_variance;
       sample_rho(m) = as_scalar(randn(1)*sqrt(sample_rho_variance)+ sample_rho_mean);
       rho=sample_rho(m); 
       } else {
@@ -251,7 +250,7 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
       
       double shape1 = sum(latent_gamma)+lamda_beta1;
       double shape2 = sum(1.0-latent_gamma)+lamda_beta2;
-      sample_pi(m)= r_4beta(shape1,shape2,0,1); //sample from beta
+      sample_pi(m)= r_4beta(shape1,shape2,0,1); //sample from beta distribution
       pi = sample_pi(m);
       // pleiotropy_21 parameter updates
       double shape1_pleiotropy_21 = sum(latent_gamma % latent_gamma_pleiotropy)+lamda_21;
@@ -274,32 +273,28 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
         2 * as_scalar(latent_beta.t()* betaxh*(n1-1)));
       post_sigma2y_scale=abs(post_sigma2y_scale);
       sample_sigma2y(m) = 1.0/as_scalar(randg(1, distr_param(post_sigma2y_shape,post_sigma2y_scale)));
-      //randg is gamma family
-      
+      //randg is gamma family of distributions; it's part of armadillo library
       sigma2y = sample_sigma2y(m);
-      
-      post_sigma2z_scale = 2/(z_norm + as_scalar(latent_beta.t()* Sigma2 * latent_beta)*alpha*alpha + as_scalar(pleiotropy_gamma.t()* Sigma2 * pleiotropy_gamma)+ 
-      
-      as_scalar((latent_beta % I).t()* Sigma2 * (latent_beta % I))*rho*rho + 2*alpha*rho*as_scalar(latent_beta.t()*Sigma2*(latent_beta % I)) + 
-      
-      2*rho*as_scalar(pleiotropy_gamma.t()*Sigma2*(latent_beta % I)) +
-      
-      2*alpha*as_scalar(pleiotropy_gamma.t()*Sigma2*latent_beta)- 2*rho*as_scalar((latent_beta % I).t()* betayh*(n2-1))- 2*as_scalar(pleiotropy_gamma.t()* betayh*(n2-1)) - 2 * alpha * as_scalar(latent_beta.t()* betayh*(n2-1)));
+      post_sigma2z_scale = 2/(z_norm + as_scalar(latent_beta.t()* 
+        Sigma2 * latent_beta)*alpha*alpha + as_scalar(pleiotropy_gamma.t()* 
+        Sigma2 * pleiotropy_gamma)+ as_scalar((latent_beta % I).t()* Sigma2 * 
+        (latent_beta % I))*rho*rho + 
+        2*alpha*rho*as_scalar(latent_beta.t()*Sigma2*(latent_beta % I)) + 
+        2*rho*as_scalar(pleiotropy_gamma.t()*Sigma2*(latent_beta % I)) +
+        2*alpha*as_scalar(pleiotropy_gamma.t()*Sigma2*latent_beta)- 
+        2*rho*as_scalar((latent_beta % I).t()* betayh*(n2-1))- 
+        2*as_scalar(pleiotropy_gamma.t()* betayh*(n2-1)) - 
+        2 * alpha * as_scalar(latent_beta.t()* betayh*(n2-1)));
       
       post_sigma2z_scale = abs(post_sigma2z_scale);	
-      
       sample_sigma2z(m) = 1.0/as_scalar(randg(1, distr_param(post_sigma2z_shape,post_sigma2z_scale)));
-      
       sigma2z = sample_sigma2z(m);
       
-      post_sigmaz1_scale = 2/(as_scalar(sum(latent_gamma % latent_beta % latent_beta)+2*sigmaz1_prior_scale));
-      
+      post_sigmaz1_scale = 2/(as_scalar(sum(latent_gamma % latent_beta % latent_beta)+
+        2*sigmaz1_prior_scale));
       post_sigmaz1_shape = 0.5*sum(latent_gamma)+ sigmaz1_prior_shape;
-      
       post_sigmaz1_scale = abs(post_sigmaz1_scale);
-      
       sample_sigmaz1(m) = 1.0/as_scalar(randg(1, distr_param(post_sigmaz1_shape,post_sigmaz1_scale)));
-      
       sigmaz1 = sample_sigmaz1(m);
       
       post_sigma2gamma_1_scale = 2/(as_scalar(sum(latent_gamma_pleiotropy % pleiotropy_gamma % pleiotropy_gamma)+2*sigma2gamma_1_prior_scale));
@@ -311,6 +306,7 @@ SEXP MRAID_CPP(SEXP betaxin, SEXP betayin,
       sample_sigma2gamma_1(m) = 1.0/as_scalar(randg(1, distr_param(post_sigma2gamma_1_shape,post_sigma2gamma_1_scale)));
       
       sigma2gamma_1 = sample_sigma2gamma_1(m);
+      
       
       } //end gibbs sampling, ie, iteration over m
     
